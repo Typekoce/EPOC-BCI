@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotiv EPOC BCI | Project Documentation</title>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary: #0d6efd;
+            --dark: #212529;
+            --light-bg: #f8f9fa;
+            --border: #dee2e6;
+            --code-bg: #272822;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, system-ui, sans-serif; line-height: 1.6; color: var(--dark); display: flex; }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--light-bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .logo { font-weight: bold; font-size: 1.2rem; color: var(--primary); margin-bottom: 2rem; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .nav-group { margin-bottom: 1.5rem; }
+        .nav-group h4 { font-size: 0.8rem; text-transform: uppercase; color: #6c757d; margin-bottom: 10px; letter-spacing: 1px; }
+        .nav-item { display: block; padding: 8px 12px; text-decoration: none; color: var(--dark); border-radius: 4px; font-size: 0.95rem; cursor: pointer; }
+        .nav-item:hover { background: #e9ecef; }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        /* Main Content Area */
+        #content {
+            margin-left: var(--sidebar-width);
+            padding: 40px 60px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary); }
+        h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; margin: 2rem 0 1rem; }
+        p { margin-bottom: 1rem; color: #444; }
+
+        /* Doxygen-style Code Blocks */
+        pre {
+            background: var(--code-bg);
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1.5rem 0;
+            border-left: 5px solid var(--primary);
+        }
+
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; background: #eee; font-size: 0.75rem; font-weight: bold; margin-left: 10px; }
+        .badge-beta { background: #ffc107; color: #000; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            #sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
+            #content { margin-left: 0; padding: 20px; }
+        }
+
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<nav id="sidebar">
+    <div class="logo">Emotiv EPOC BCI <br><small>Documentation (2026)</small></div>
+    
+    <div class="nav-group">
+        <h4>Overview</h4>
+        <a class="nav-item active" onclick="showSection('intro')">Introduction</a>
+    </div>
+
+    <div class="nav-group">
+        <h4>Setup & Installation</h4>
+        <a class="nav-item" onclick="showSection('install')">Installation Guide</a>
+        <a class="nav-item" onclick="showSection('cortex')">Cortex API Path</a>
+        <a class="nav-item" onclick="showSection('legacy')">Legacy python-emotiv Path</a>
+    </div>
+
+    <div class="nav-group">
+        <h4>Development</h4>
+        <a class="nav-item" onclick="showSection('roadmap')">Integration Roadmap</a>
+        <a class="nav-item" onclick="showSection('troubleshooting')">Troubleshooting</a>
+    </div>
+</nav>
+
+<main id="content">
+    <section id="intro" class="active">
+        <h1>Emotiv EPOC BCI Project</h1>
+        <p>This project enables interfacing with an old Emotiv EPOC EEG brain scanner on Ubuntu Linux. It supports both the modern <strong>Cortex API</strong> (preferred where compatible) and the legacy reverse-engineered <strong>python-emotiv</strong> library.</p>
+        <h2>Core Goals</h2>
+        <ul>
+            <li>Stream raw EEG data in real-time</li>
+            <li>Support mental commands, focus metrics, etc. via Cortex</li>
+            <li>Future integrations: Meta Quest VR, Apple Vision Pro, Unity/Unreal, Android, Wi-Fi/IoT, and more</li>
+            <li>Zero heavy frameworks — pure Python + WebSockets</li>
+        </ul>
+        <p><strong>Current status (Feb 2026)</strong>: Cortex Linux support is <span class="badge badge-beta">Beta</span> on Ubuntu 22.04+ (64-bit). Old EPOC may require the legacy path if not detected.</p>
+    </section>
+
+    <section id="install">
+        <h1>Installation Guide</h1>
+        <p>Start by running the automated installer script (legacy path first; Cortex requires separate download).</p>
+        <pre>
+# Make executable and run
+chmod +x install-emotiv-bci.sh
+./install-emotiv-bci.sh</pre>
+        <p>This installs: Python 3 deps, git, libusb, bluez, pyusb, pycrypto, numpy, etc., and the python-emotiv library.</p>
+        <p>Check installed packages and processes at the end of the script output.</p>
+    </section>
+
+    <section id="cortex">
+        <h1>Cortex API Path <span class="badge badge-beta">Recommended</span></h1>
+        <p>1. Download Emotiv Launcher (Ubuntu Beta) from <a href="https://www.emotiv.com/products/emotiv-launcher#download">emotiv.com</a> — supports Ubuntu 22.04+ (64-bit).</p>
+        <p>2. Register a Cortex app → get client_id & client_secret.</p>
+        <p>3. Edit <code>emotiv_interface.py</code>:</p>
+        <pre>
+client_id = 'your_client_id'
+client_secret = 'your_client_secret'</pre>
+        <p>4. Run with Launcher active:</p>
+        <pre>python3 emotiv_interface.py</pre>
+        <p>Expect live EEG packets printed (timestamps + sensor values).</p>
+    </section>
+
+    <section id="legacy">
+        <h1>Legacy python-emotiv Path</h1>
+        <p>Use if old EPOC is not detected by Cortex/Launcher.</p>
+        <p>After running install script, test:</p>
+        <pre>python3 -m emotiv.epoc</pre>
+        <p>Should show raw sensor packets when headset is on and dongle connected.</p>
+        <p><strong>Note</strong>: Library is archived/unmaintained → fallback only.</p>
+    </section>
+
+    <section id="roadmap">
+        <h1>Integration Roadmap</h1>
+        <p>Phased plan to extend BCI control to other platforms:</p>
+        <ul>
+            <li><strong>Phase 1 (1-2 mo)</strong>: Research, core command prototypes</li>
+            <li><strong>Phase 2 (2-3 mo)</strong>: Modular streaming (LSL, WebSockets)</li>
+            <li><strong>Phase 3 (3-6 mo)</strong>: Platform integrations
+                <ul>
+                    <li>Meta Quest (Unity plugin)</li>
+                    <li>Apple Vision Pro (HID/Unity bridge)</li>
+                    <li>Android (Emotiv SDK)</li>
+                    <li>Unity 3D & Unreal Engine</li>
+                    <li>Nintendo Switch (emulation, limited)</li>
+                    <li>Wi-Fi/IoT (Node-RED bridge)</li>
+                </ul>
+            </li>
+            <li><strong>Phase 4</strong>: Testing, optimization, security</li>
+            <li><strong>Phase 5</strong>: Deployment & maintenance (ongoing)</li>
+        </ul>
+        <p>Total estimated: 8-16 months. Start with Unity + Quest for high impact.</p>
+    </section>
+
+    <section id="troubleshooting">
+        <h1>Troubleshooting</h1>
+        <ul>
+            <li><strong>No data?</strong> Check saline sensors, fit, dongle LED.</li>
+            <li><strong>Cortex fails?</strong> Ensure Launcher running, headset paired, credentials correct.</li>
+            <li><strong>Udev/permissions?</strong> Manually copy 99-emotiv.rules and reload udev.</li>
+            <li><strong>Old EPOC not detected?</strong> Use legacy path or test in VM with USB passthrough.</li>
+        </ul>
+        <p>See README.md for full details and Cortex docs: <a href="https://emotiv.gitbook.io/cortex-api">emotiv.gitbook.io/cortex-api</a></p>
+    </section>
+</main>
+
+<script>
+    function showSection(sectionId) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.classList.remove('active');
+            if (nav.getAttribute('onclick').includes(sectionId)) {
+                nav.classList.add('active');
+            }
+        });
+
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
