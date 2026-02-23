@@ -1,5 +1,8 @@
 # Emotiv Old EPOC BCI Interface for Ubuntu
 
+## Mission & Vision
+→ Read the full [MISSION.md](./MISSION.md) for the long-term goal of this project.
+
 This repository provides scripts and installation helpers to interface with an old **Emotiv EPOC** (or similar legacy models) EEG brain-computer interface headset on Ubuntu Linux.
 
 **Important (February 2026 update):**  
