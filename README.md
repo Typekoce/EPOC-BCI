@@ -3,6 +3,8 @@
 ## Mission & Vision
 → Read the full [MISSION.md](./MISSION.md) for the long-term goal of this project.
 
+→ [NEUROLENS-FUSION.md](./NEUROLENS-FUSION.md) – Detailed creative exploration, lateral thinking application, and glasses prototype ideas for reviving the PhD direction.
+
 This repository provides scripts and installation helpers to interface with an old **Emotiv EPOC** (or similar legacy models) EEG brain-computer interface headset on Ubuntu Linux.
 
 **Important (February 2026 update):**  
